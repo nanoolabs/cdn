@@ -88,7 +88,7 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url)
     const path = sanitizePath(url.pathname)
-    const log = env?.DEBUG ? console.log : () => {}
+    const log = env?.DEBUG ? console.log : () => { }
 
     // 1. Parse allowed origins
     const allowedOrigins = (env.ALLOWED_ORIGINS || '')
@@ -133,6 +133,14 @@ export default {
       return new Response(page, {
         headers: { 'Content-Type': 'text/html;charset=UTF-8' },
       })
+    }
+
+    // Health check. no CORS, no auth
+    if (path === 'health') {
+      return new Response(
+        JSON.stringify({ status: 'ok', version: env['CDN_VERSION'] || '' }),
+        { headers: { 'Content-Type': 'application/json' } },
+      )
     }
 
     // Block unauthorized origins/referers
