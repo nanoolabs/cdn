@@ -3,7 +3,6 @@
   "name": "nanoo-cdn",
   "version": "2.2.6",
   "description": "Provide access to a private Backblaze B2 bucket via a Cloudflare Worker",
-  "main": "index.js",
   "packageManager": "pnpm@11.16.0",
   "scripts": {
     "format": "prettier --write '**/*.{js,json,md}'",

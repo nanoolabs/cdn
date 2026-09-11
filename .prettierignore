@@ -1,6 +1,9 @@
 # Wrangler Cloudflare
 .wrangler/**
 
+# Static assets (vendored, not source)
+public/
+
 # GitHub workflows
 .github/
 
