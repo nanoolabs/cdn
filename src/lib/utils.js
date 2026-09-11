@@ -1,4 +1,4 @@
-const UNSIGNABLE_HEADERS = [
+const UNSIGNABLE_HEADERS = new Set([
   // These headers appear in the request, but are never passed upstream
   'authorization',
   'x-forwarded-proto',
@@ -14,23 +14,18 @@ const UNSIGNABLE_HEADERS = [
   'if-none-match',
   'if-range',
   'if-unmodified-since',
-]
+])
 
 // Filter out cf-* and any other headers we don't want to include in the signature
 export function filterHeaders(headers, env) {
-  // Suppress irrelevant IntelliJ warning
-  // noinspection JSCheckFunctionSignatures
-  return new Headers(
-    Array.from(headers.entries()).filter(
-      (pair) =>
-        !(
-          UNSIGNABLE_HEADERS.includes(pair[0]) ||
-          pair[0].startsWith('cf-') ||
-          ('ALLOWED_HEADERS' in env &&
-            !env['ALLOWED_HEADERS'].includes(pair[0]))
-        ),
-    ),
-  )
+  const allowed = env['ALLOWED_HEADERS']
+  const result = new Headers()
+  for (const [key, value] of headers) {
+    if (UNSIGNABLE_HEADERS.has(key) || key.startsWith('cf-')) continue
+    if (allowed && !allowed.includes(key)) continue
+    result.append(key, value)
+  }
+  return result
 }
 
 export function createHeadResponse(response) {
