@@ -4,7 +4,7 @@ workers_dev = false
 compatibility_date = "2025-09-01"
 main = "src/index.js"
 upload_source_maps = true
-compatibility_flags = [ "nodejs_compat" ]
+compatibility_flags = ["nodejs_compat"]
 
 [assets]
 directory = "./public/"
@@ -24,7 +24,7 @@ RCLONE_DOWNLOAD = "false"
 # or aws4fetch falls back to UNSIGNED-PAYLOAD
 ALLOWED_HEADERS = ["range", "x-amz-content-sha256"]
 # show version on home page
-CDN_VERSION = "2.2.6"
+CDN_VERSION = "2.2.7"
 
 [observability]
 enabled = true
