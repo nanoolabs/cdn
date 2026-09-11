@@ -1,15 +1,28 @@
-/target
-/dist
-**/*.rs.bk
-Cargo.lock
+# dependencies
+node_modules/
+
+# build output
+dist/
+target/
 bin/
 pkg/
+
+# logs
+*.log
 wasm-pack.log
-worker/
-node_modules/
-.cargo-ok
+
+# environment variables
 .env
-.idea/
 .dev.vars*
 !.dev.vars.example
+
+# editor
+.idea/
+
+# cloudflare
 .wrangler/
+
+# rust
+**/*.rs.bk
+Cargo.lock
+.cargo-ok
