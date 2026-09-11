@@ -15,6 +15,16 @@ import { homePage, errorPage } from './lib/home.js'
 // How many times to retry a range request where the response is missing content-range
 const RANGE_RETRY_ATTEMPTS = 3
 
+const HEADERS_TO_REMOVE = [
+  'x-amz-request-id',
+  'x-amz-id-2',
+  'x-bz-content-sha1',
+  'x-bz-upload-timestamp',
+  'x-bz-upload-url',
+  'x-bz-info-author',
+  'Server',
+]
+
 /**
  * Strips sensitive B2/S3 header from the response to mask the origin eco
  * @param {Response} response
@@ -22,18 +32,55 @@ const RANGE_RETRY_ATTEMPTS = 3
  */
 function cleanHeaders(response) {
   const headers = new Headers(response.headers)
-  const headersToRemove = [
-    'x-amz-request-id',
-    'x-amz-id-2',
-    'x-bz-content-sha1',
-    'x-bz-upload-timestamp',
-    'x-bz-upload-url',
-    'x-bz-info-author',
-    'Server',
-  ]
-  headersToRemove.forEach((h) => headers.delete(h))
+  HEADERS_TO_REMOVE.forEach((h) => headers.delete(h))
   return headers
 }
+
+const STATIC_EXTENSIONS = new Set([
+  // Fonts
+  'woff2',
+  'woff',
+  'ttf',
+  'otf',
+  // Images
+  'png',
+  'jpg',
+  'jpeg',
+  'svg',
+  'webp',
+  'ico',
+  'avif',
+  // Scripts, Styles & Runtimes
+  'css',
+  'js',
+  'mjs',
+  'map',
+  'wasm',
+  'astro',
+  // Documents
+  'pdf',
+  'json',
+  'xml',
+  'txt',
+  // Archives & Binaries
+  'zip',
+  'gz',
+  'br',
+  'tar',
+  'apk',
+  'exe',
+  'AppImage',
+  'dmg',
+  // Media
+  'mp4',
+  'webm',
+  'mp3',
+  'wav',
+  'flac',
+  'ogg',
+  'mpd',
+  'm3u8',
+])
 
 // Supress IntelliJ's "unused default export" warning
 // noinspection JSUnusedGlobalSymbols
@@ -216,56 +263,11 @@ export default {
     if (response.ok) {
       // Set cache header base on file extension
       const extension = path.split('.').pop().toLowerCase()
-      const staticExtension = [
-        // Fonts
-        'woff2',
-        'woff',
-        'ttf',
-        'otf',
-        // Images
-        'png',
-        'jpg',
-        'jpeg',
-        'svg',
-        'webp',
-        'ico',
-        'avif',
-        // Scripts, Styles & Runtimes
-        'css',
-        'js',
-        'mjs',
-        'map',
-        'wasm',
-        'astro',
-        // Documents
-        'pdf',
-        'json',
-        'xml',
-        'txt',
-        // Archives & Binaries
-        'zip',
-        'gz',
-        'br',
-        'tar',
-        'apk',
-        'exe',
-        'AppImage',
-        'dmg',
-        // Media
-        'mp4',
-        'webm',
-        'mp3',
-        'wav',
-        'flac',
-        'ogg',
-        'mpd',
-        'm3u8',
-      ]
 
       // Clone response to modify header
       response = new Response(response.body, response)
 
-      if (staticExtension.includes(extension)) {
+      if (STATIC_EXTENSIONS.has(extension)) {
         response.headers.set(
           'Cache-Control',
           'public, max-age=31536000, immutable',
