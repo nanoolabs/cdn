@@ -7,9 +7,9 @@
 ## Overview
 
 Deliver assets fast and secure for the Nanoo Labs ecosystem.
-Proxies a private Backblaze B2 bucket throug Cloudflare Workers with AWS SigV4 signing, edge caching, and CORS enforcement. No egress costs. Origin stays hidden.
+Proxies a private Backblaze B2 bucket through Cloudflare Workers with AWS SigV4 signing, edge caching, and CORS enforcement. No egress costs. Origin stays hidden.
 
-##Architecture & Tech Stack
+## Architecture & Tech Stack
 
 - **Runtime:** Cloudflare worker (V8 Isolate)
 - **Auth:** AWS SigV4 via `aws4fetch`
@@ -29,14 +29,14 @@ pnpm run setup
      ALLOWED_ORIGINS = "http://localhost:8787,http://localhost:5173"
 
 # 3. Run dev server
-pnpm dlx wrangler dev
+pnpm run dev
 
 # 4. Deploy to Cloudflare
-pnpm dlx wrangler deploy
+pnpm run deploy
 
 # 5. Set production secrets (other var in wrangler.toml)
-pnpm dlx wrangler secret put B2_APPLICATION_KEY
-pnpm dlx wrangler secret put ALLOWED_ORIGINS
+pnpm exec wrangler secret put B2_APPLICATION_KEY
+pnpm exec wrangler secret put ALLOWED_ORIGINS
 ```
 
 ## Project Structure
@@ -56,7 +56,7 @@ pnpm dlx wrangler secret put ALLOWED_ORIGINS
 └── ARCHITECTURE.md       # System design
 ```
 
-## evelopment & Ops
+## Development & Ops
 
 - **Format:** `pnpm run format` (Prettier, no-semi)
 - **Deploy:** Auto on push to `main` via GitHub actions
