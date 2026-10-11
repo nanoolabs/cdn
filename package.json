@@ -7,6 +7,8 @@
   "scripts": {
     "format": "prettier --write '**/*.{js,json,md}'",
     "format:check": "prettier --check '**/*.{js,json,md}'",
+    "format:changed": "git diff --name-only --diff-filter=d HEAD -z | xargs -0 -r prettier --write --ignore-unknown",
+    "prepare": "husky",
     "setup": "cp .dev.vars.example .dev.vars",
     "dev": "wrangler dev",
     "deploy": "wrangler deploy"
@@ -17,10 +19,15 @@
   ],
   "license": "MIT",
   "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^17.6.0",
     "prettier": "^3.9.6",
     "wrangler": "^4.130.0"
   },
   "dependencies": {
     "aws4fetch": "^1.0.20"
+  },
+  "lint-staged": {
+    "*": "prettier --ignore-unknown --write"
   }
 }
