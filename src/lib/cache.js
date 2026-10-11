@@ -23,9 +23,12 @@ export async function saveToCache(request, response, ctx) {
   const cacheResponse = response.clone()
   const mutableResponse = new Response(cacheResponse.body, cacheResponse)
 
-  // We add a Cache-Control header if B2 doesn't provide one, or to override it
-  // s-maxage=3600 tells Cloudflare to cache it for 1 hour at the edge
-  mutableResponse.headers.set('Cache-Control', 'public, s-maxage=3600')
+  // Respect Cache-Control already set by the caller (e.g immutable for
+  // version asset); only supply a default edge TTL when none exists.
+  // s-maxage tell CF how long to keep it at edge.
+  if (!mutableResponse.headers.has('Cache-Control')) {
+    mutableResponse.headers.set('Cache-Control', 'public, s-maxage=3600')
+  }
 
   // Use ctx.waitUntil so the response is sent to the user immediately,
   // while the cache write happens in the background.

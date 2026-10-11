@@ -61,7 +61,21 @@ pnpm exec wrangler secret put ALLOWED_ORIGINS
 - **Format:** `pnpm run format` (Prettier, no-semi)
 - **Deploy:** Auto on push to `main` via GitHub actions
 - **Secrets:** use `wrangler secret put <KEY>` for production
-- **No build step** — pure JS
+- **No build step**: pure JS
+
+## Caching
+
+Path-aware `Cache-Control`, set per request:
+
+| Path                                                              | Header                                 |
+| ----------------------------------------------------------------- | -------------------------------------- |
+| Static ext (image, font, css, js, archive, media), versioned path | `public, max-age=31536000, immutable`  |
+| Contains `/latest/` (mutable alias, rebuilt each release)         | `public, max-age=300, must-revalidate` |
+| Everything else                                                   | `public, max-age=300, must-revalidate` |
+
+`saveToCache` store response with caller `Cache-Control` intact,
+Default edge TTL `s-maxage=3600` only applies when no header is set.
+404s are never cached.
 
 ---
 
@@ -77,7 +91,7 @@ Part of [nanoolabs.dev](https://nanoolabs.dev) ecosystem.
 
 ## License
 
-MIT and Apache 2.0 — Nanoo Labs © 2026.
+MIT and Apache 2.0. Nanoo Labs © 2026.
 
 ---
 

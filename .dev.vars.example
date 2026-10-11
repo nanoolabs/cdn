@@ -1,5 +1,5 @@
 # =============================================================================
-# Nanoo CDN — Local Dev env config
+# Nanoo CDN - Local Dev env config
 # =============================================================================
 # Copy this file to .dev.vars (or run `pnpm run setup`) and fill in value.
 # .dev.vars is gitignored - secrets stay local.

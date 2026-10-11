@@ -88,7 +88,7 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url)
     const path = sanitizePath(url.pathname)
-    const log = env?.DEBUG ? console.log : () => { }
+    const log = env?.DEBUG ? console.log : () => {}
 
     // 1. Parse allowed origins
     const allowedOrigins = (env.ALLOWED_ORIGINS || '')
@@ -275,7 +275,11 @@ export default {
       // Clone response to modify header
       response = new Response(response.body, response)
 
-      if (STATIC_EXTENSIONS.has(extension)) {
+      // /latest/ is a mutable alias (rebuilt on every release); immutable would
+      // pin stale assets in browsers for up to a year
+      const isMutableAlias = path.includes('/latest/')
+
+      if (STATIC_EXTENSIONS.has(extension) && !isMutableAlias) {
         response.headers.set(
           'Cache-Control',
           'public, max-age=31536000, immutable',
@@ -283,7 +287,7 @@ export default {
       } else {
         response.headers.set(
           'Cache-Control',
-          'public, max-age=3600, must-revalidate',
+          'public, max-age=300, must-revalidate',
         )
       }
 
